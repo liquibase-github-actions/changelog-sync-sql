@@ -6,7 +6,7 @@ Output the raw SQL used by Liquibase when running changelogSync
 ```yaml
 steps:
 - uses: actions/checkout@v3
-- uses: liquibase-github-actions/changelog-sync-sql@v4.17.0
+- uses: liquibase-github-actions/changelog-sync-sql@v4.17.1
   with:
     # The root changelog file
     # string
@@ -80,7 +80,7 @@ The liquibase changelog sync sql action accepts all valid liquibase global optio
 ```yaml
 steps:
   - uses: actions/checkout@v3
-  - uses: liquibase-github-actions/changelog-sync-sql@v4.17.0
+  - uses: liquibase-github-actions/changelog-sync-sql@v4.17.1
     with:
       changelogFile: ""
       url: ""
