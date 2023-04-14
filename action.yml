@@ -6,8 +6,14 @@ inputs:
   changelogFile: # string
     description: '*required* The root changelog file'
     required: true
+  changelogParameters: # string
+    description: ''
+    required: false
   contexts: # string
-    description: 'Context string to use for filtering which changes to mark as executed'
+    description: 'Context string to use for filtering'
+    required: false
+  database: # string
+    description: ''
     required: false
   defaultCatalogName: # string
     description: 'The default catalog name to use for the database connection'
@@ -22,7 +28,7 @@ inputs:
     description: 'The JDBC driver properties file'
     required: false
   labelFilter: # string
-    description: 'Label expression to use for filtering which changes to mark as executed'
+    description: 'Label expression to use for filtering'
     required: false
   outputDefaultCatalog: # bool
     description: 'Control whether names of objects in the default catalog are fully qualified or not. If true they are. If false, only objects outside the default catalog are fully qualified'
@@ -31,13 +37,16 @@ inputs:
     description: 'Control whether names of objects in the default schema are fully qualified or not. If true they are. If false, only objects outside the default schema are fully qualified'
     required: false
   password: # string
-    description: 'The database password'
+    description: 'Password to use to connect to the database'
+    required: false
+  skipDatabaseStep: # bool
+    description: ''
     required: false
   url: # string
     description: '*required* The JDBC database connection URL'
     required: true
   username: # string
-    description: 'The database username'
+    description: 'Username to use to connect to the database'
     required: false
   alwaysDropInsteadOfReplace: # bool
     description: 'If true, drop and recreate a view instead of replacing it.'
@@ -144,6 +153,9 @@ inputs:
   logLevel: # string
     description: 'Controls which logs get set to stderr AND to any log file. The CLI defaults, if log file set, to SEVERE. Others vary by integration. The official log levels are: OFF, SEVERE, WARNING, INFO, FINE'
     required: false
+  mirrorConsoleMessagesToLog: # bool
+    description: 'When set to true, the console messages are mirrored to the logs as [liquibase.ui] to provide a more complete picture of liquibase operations to log analysis tools. Set to false to change this behavior.'
+    required: false
   missingPropertyMode: # string
     description: 'How to handle changelog property expressions where a value is not set. For example, a string "${address}" when no "address" property was defined. Values can be: "preserve" which leaves the string as-is, "empty" which replaces it with an empty string, or "error" which stops processing with an error.'
     required: false
@@ -153,7 +165,7 @@ inputs:
   nativeExecutor: # string
     description: 'Custom executor that can specified'
     required: false
-  onMissingInclude: # string
+  onMissingIncludeChangelog: # string
     description: 'If set to WARN, then liquibase will not throw exception on missing changelog file, instead will show a warning message.'
     required: false
   outputFile: # string
@@ -221,7 +233,9 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.changelogFile }}
+    - ${{ inputs.changelogParameters }}
     - ${{ inputs.contexts }}
+    - ${{ inputs.database }}
     - ${{ inputs.defaultCatalogName }}
     - ${{ inputs.defaultSchemaName }}
     - ${{ inputs.driver }}
@@ -230,6 +244,7 @@ runs:
     - ${{ inputs.outputDefaultCatalog }}
     - ${{ inputs.outputDefaultSchema }}
     - ${{ inputs.password }}
+    - ${{ inputs.skipDatabaseStep }}
     - ${{ inputs.url }}
     - ${{ inputs.username }}
     - ${{ inputs.alwaysDropInsteadOfReplace }}
@@ -267,10 +282,11 @@ runs:
     - ${{ inputs.logFile }}
     - ${{ inputs.logFormat }}
     - ${{ inputs.logLevel }}
+    - ${{ inputs.mirrorConsoleMessagesToLog }}
     - ${{ inputs.missingPropertyMode }}
     - ${{ inputs.monitorPerformance }}
     - ${{ inputs.nativeExecutor }}
-    - ${{ inputs.onMissingInclude }}
+    - ${{ inputs.onMissingIncludeChangelog }}
     - ${{ inputs.outputFile }}
     - ${{ inputs.outputFileEncoding }}
     - ${{ inputs.outputLineSeparator }}
